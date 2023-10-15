@@ -47,15 +47,14 @@ public class MessageController {
     public ResponseEntity<?> sendMessage(@RequestBody MessageRequest message) {
         var sender = userService.getUserByUsername(SessionUtil.getUsernameFromSession());
         var receiver = userService.getUserByUsername(message.getReceiver());
+        if (receiver == null)
+            return ResponseEntity.badRequest().body("Пользователь " + message.getReceiver() + " не найден");
 
-        if (!receiver.isFriend(sender))
+        if (receiver.isOnlyFriendsMessaging() && !receiver.isFriend(sender))
             return ResponseEntity.badRequest().body("Пользователь принимает сообщения только от друзей");
 
         if (sender.getUsername().equals(receiver.getUsername()))
             return ResponseEntity.badRequest().body("Нельзя отправлять сообщения самому себе");
-
-        if (receiver == null)
-            return ResponseEntity.badRequest().body("Пользователь " + message.getReceiver() + " не найден");
 
         var chat = chatService.getChatByParticipants(sender, receiver);
 
@@ -70,5 +69,15 @@ public class MessageController {
         chatRepository.save(chat);
 
         return ResponseEntity.ok("Сообщение доставлено");
+    }
+
+    @GetMapping("/setFriendsOnly")
+    public ResponseEntity<?> setFriendsOnly(@RequestParam boolean set) {
+        var curUser = userService.getUserByUsername(SessionUtil.getUsernameFromSession());
+        curUser.setOnlyFriendsMessaging(set);
+
+        userService.editUser(curUser);
+
+        return ResponseEntity.ok(set);
     }
 }

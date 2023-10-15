@@ -1,1 +1,65 @@
 Перед запуском требуется запустить скрипт schema-postgresql.sql
+
+POST /signin { "username": "admin", "password": "admin" }
+Response { "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NzM3NzI3NiwiZXhwIjoxNjk3MzgwODc2fQ.fk9Dz72XaE9nHnppDqyTNl4YeTz-LHnBH24tVRn_ZYg" }
+/signin и /signup авторизируют и регистрируют пользователя соответственно и выдают
+Было сделано хеширование пароля
+Сделана поддержка Spring Security
+Были сделаны jwt токены
+
+GET /api/logout разлогинивают сессию
+Сессии инвалидируются, как и токены
+
+GET /confirmEmail?token=b0659818-d179-4b61-b18a-df8a48fd1406
+Response Почта успешно подтверждена
+Подтверждает почту по присланной на почту ссылке
+
+POST /api/users/edit { "email": "yifet13442@cindalle.com", "surname": "Потемкин" }
+Response Все ок
+Если почта была изменена, из статуса пользователя удаляется CONFIRMED и надо подтвердить новую почту
+
+POST /api/users/changePassword { "oldPassword": "admaas", "newPassword": "123456" }
+Response Неверный текущий пароль
+
+POST /api/users/changePassword { "oldPassword": "admin", "newPassword": "123456" }
+Response Пароль успешно изменен
+
+GET /api/users/delete
+Response Аккаунт успешно удален
+Разлогинивает пользователя и удаляет акккаунт, при этом дает сутки на восстановление
+
+POST /restore { "username": "admin", "password": "admin" }
+Response Аккаунт успешно восстановлен
+Восстанавливает аккаунт если он был удален и не истекли сутки после удаления
+
+POST /api/messages/sendMessage { "receiver": "Чибзик", "content": "Даров" }
+Response Пользователь Чибзик не найден
+
+POST /api/messages/sendMessage { "receiver": "coolman", "content": "Даров" }
+Response Сообщение доставлено
+Отправляет сообщение пользователю, проверяет на существование и принимает ли пользователь сообщения только от друзей
+
+GET /api/messages/getMessages?user=user2
+Response [
+    {
+        "contents": "Hi",
+        "time": "2023-10-15T15:43:13.375+00:00",
+        "sender": "user3",
+        "receiver": "user2"
+    },
+    {
+        "contents": "Wassup",
+        "time": "2023-10-15T15:43:18.557+00:00",
+        "sender": "user3",
+        "receiver": "user2"
+    }
+]
+
+POST /api/friends/sendRequest { "username": "user2" }
+Response Заявка в друзья user2 отправлена
+Отправляет заявку в друзья
+
+
+GET /api/friends/acceptRequest?username=user3
+Response Заявка в друзья от user3 принята
+Принимает заявку если заявка была отправлена

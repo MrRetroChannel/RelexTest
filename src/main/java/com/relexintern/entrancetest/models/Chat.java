@@ -16,10 +16,10 @@ public class Chat {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @OneToOne
+    @ManyToOne
     private User user1;
 
-    @OneToOne
+    @ManyToOne
     private User user2;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)

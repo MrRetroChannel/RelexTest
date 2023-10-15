@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/register")
                         .permitAll()
-                        .requestMatchers("/login", "/signin", "/signup", "/restore", "/confirmEmail", "/ebalay")
+                        .requestMatchers("/login", "/signin", "/signup", "/restore", "/confirmEmail")
                         .permitAll()
                         .requestMatchers("/api/messages/**")
                         .hasRole("CONFIRMED")

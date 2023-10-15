@@ -81,7 +81,7 @@ public class FriendController {
     @GetMapping("/setPrivate")
     public ResponseEntity<?> setPrivate(@RequestParam boolean set) {
         var curUser = userService.getUserByUsername(SessionUtil.getUsernameFromSession());
-        curUser.setOnlyFriendsMessaging(set);
+        curUser.setPrivateFriends(set);
 
         userService.editUser(curUser);
 
